@@ -8,6 +8,12 @@ USER root
 RUN apt-get update && apt-get install -y \
     tmux \
     curl \
+    unzip \
+    ripgrep \
+    fd-find \
+    curl \
+    liblua5.1-0-dev \
+    luarocks \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install the pre-compiled Neovim binary into /opt
