@@ -12,13 +12,12 @@ RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linu
     tar -C /opt -xzf nvim-linux-x86_64.tar.gz && \
     rm nvim-linux-x86_64.tar.gz
 
-# Add Neovim to PATH globally
-ENV PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
-
 # Ensure correct permissions
 RUN chown -R appuser:appuser /app
 
 USER appuser
+# Add Neovim to PATH
+ENV PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
 ENV HOME=/app
 WORKDIR /app
 
