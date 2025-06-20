@@ -3,30 +3,34 @@
 # Exit immediately if a command fails
 set -e
 
-# --- One-time setup ---
-# This script runs every time the container starts.
-# We check if the config files exist in the /app volume before creating them.
-# This makes the setup idempotent (it won't re-clone every time you start).
+# --- One-time setup for the /app volume ---
 
-# We check for the .git directory as a robust sign of a successful clone.
+echo "Creating/Updating .tmux.conf..."
+cat << EOF > /app/.tmux.conf
+# Force tmux to run an interactive BASH LOGIN shell for every new window/pane.
+# The "-l" flag is what makes it a login shell.
+# A login shell will reliably source /app/.profile to set the environment.
+set-option -g default-command "bash -l"
+
+# Set a shorter escape time for a more responsive feel.
+set-option -sg escape-time 10
+EOF
+
+# Clone Neovim config only if it doesn't already exist.
 if [ ! -d "/app/.config/nvim/.git" ]; then
   echo "First run: Neovim config not found. Cloning kickstart.nvim..."
-  # git clone will create the parent /app/.config directory for us
   git clone https://github.com/romanab/kickstart.nvim.git /app/.config/nvim
 fi
 
-if [ ! -f "/app/.tmux.conf" ]; then
-  echo "First run: .tmux.conf not found. Creating..."
-  echo 'set-option -sg escape-time 10' > /app/.tmux.conf
+# Add the PATH to .profile, which is the file read by login shells.
+if ! grep -q "nvim-linux64" /app/.profile 2>/dev/null; then
+    echo "First run: Adding nvim to PATH in .profile..."
+    # Add a newline for safety, then our comments and command.
+    echo '' >> /app/.profile
+    echo '# Add Neovim to the PATH for login shells' >> /app/.profile
+    echo 'export PATH="/opt/nvim-linux64/bin:$PATH"' >> /app/.profile
 fi
 
-# Add nvim to PATH in .bashrc if it's not already there
-if ! grep -q "nvim-linux64" /app/.bashrc 2>/dev/null; then
-    echo "First run: Adding nvim to PATH in .bashrc"
-    echo 'export PATH="/opt/nvim-linux64/bin:$PATH"' >> /app/.bashrc
-fi
-
-# --- Execute the main command ---
-# 'exec "$@"' runs the command passed to the script.
-# In our Dockerfile, this will be "tmux" (from the CMD instruction).
+echo "Configuration complete. Starting tmux..."
+# Execute the command passed to this script (which will be "tmux" from the Dockerfile CMD)
 exec "$@"
