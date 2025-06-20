@@ -19,6 +19,7 @@ ENV PATH="/opt/nvim-linux-x86_64/bin:${PATH}"
 RUN chown -R appuser:appuser /app
 
 USER appuser
+ENV HOME=/app
 WORKDIR /app
 
 # Set up Neovim config (create parent dir just in case)
