@@ -23,7 +23,7 @@ if [ ! -d "/app/.config/nvim/.git" ]; then
 fi
 
 # Add the PATH to .profile, which is the file read by login shells.
-if ! grep -q "nvim-linux64" /app/.profile 2>/dev/null; then
+if ! grep -q "nvim-linux-x86_64" /app/.profile 2>/dev/null; then
     echo "First run: Adding nvim to PATH in .profile..."
     # Add a newline for safety, then our comments and command.
     echo '' >> /app/.profile
