@@ -28,7 +28,7 @@ if ! grep -q "nvim-linux-x86_64" /app/.profile 2>/dev/null; then
     # Add a newline for safety, then our comments and command.
     echo '' >> /app/.profile
     echo '# Add Neovim to the PATH for login shells' >> /app/.profile
-    echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> /app/.profile
+    echo 'export PATH="/opt/nvim-linux-x86_64/bin:/venv/bin:$PATH"' >> /app/.profile
 fi
 
 echo "Configuration complete. Starting tmux..."
