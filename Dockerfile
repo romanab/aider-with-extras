@@ -7,6 +7,7 @@ USER root
 # Install tmux, curl, and clean up.
 RUN apt-get update && apt-get install -y \
     tmux \
+    xclip \
     curl \
     unzip \
     ripgrep \
